@@ -1,4 +1,11 @@
 {
   "name": "app_mobile",
-  "displayName": "app_mobile"
+  "displayName": "Animefoda",
+  "expo": {
+    "extra": {
+      "eas": {
+        "projectId": "95306593-6e72-423b-ba76-437c97f769cf"
+      }
+    }
+  }
 }
