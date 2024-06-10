@@ -1,17 +1,20 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { ScrollView} from "react-native";
 import Header from "../components/Header";
 import { homeStyle } from "../styles/homeStyle";
 import Animes from "../components/Animes";
+import { white } from "../styles/baseStyle.ts";
+import RecentEpisodes from "../components/RecentEpisodes.tsx";
 
 
 const Home:React.FC=()=>{
     return(
-        <View style={homeStyle.body}>
+        <ScrollView style={[homeStyle.body]}>
             <Header></Header>
             <Animes manga={false}></Animes>
             <Animes manga={true}></Animes>
-        </View>
+            <RecentEpisodes/>
+        </ScrollView>
     )
 }
 export default Home

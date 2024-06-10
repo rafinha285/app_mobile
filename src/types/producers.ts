@@ -1,3 +1,4 @@
-export interface producer{
-    
+export interface Producer{
+	id:string;
+	name:string;
 }
