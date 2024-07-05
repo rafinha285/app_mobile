@@ -1,10 +1,10 @@
 import React, { FC } from "react";
-import TextFont from "./TextFont.tsx";
+import TextFont from "../TextFont.tsx";
 import { ScrollView, View } from "react-native";
-import { animeStyle } from "../styles/animeScreen.ts";
+import { animeStyle } from "../../styles/animeScreen.ts";
 import Gen from "./Gen.tsx";
-import { Producer } from "../types/producers.ts";
-import { white } from "../styles/baseStyle.ts";
+import { Producer } from "../../types/producers.ts";
+import { white } from "../../styles/baseStyle.ts";
 
 interface props{
 	gens:string[]|Producer[],

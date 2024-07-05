@@ -1,10 +1,10 @@
 import { FC, useState } from "react";
-import { PressableView } from "./ViewTochable.tsx";
+import { PressableView } from "../../ViewTochable.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faEye } from "@fortawesome/free-regular-svg-icons";
-import TextFont from "./TextFont.tsx";
-import { animeEpisodeComponentStyle } from "../styles/animeScreen.ts";
-import { white } from "../styles/baseStyle.ts";
+import TextFont from "../../TextFont.tsx";
+import { animeEpisodeComponentStyle } from "../../../styles/animeScreen.ts";
+import { white } from "../../../styles/baseStyle.ts";
 import { faDownload, faPlay } from "@fortawesome/free-solid-svg-icons";
 
 interface Props {

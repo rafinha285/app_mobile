@@ -1,6 +1,6 @@
 import { FC, ReactNode } from "react";
 import { Text, TextStyle } from "react-native";
-import { baseStyles } from "../styles/baseStyle.ts";
+import { baseStyles } from '../styles/baseStyle.ts';
 
 interface Props {
 	children: ReactNode;

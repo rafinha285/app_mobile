@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { Text, View } from "react-native";
-import { PressableView } from "./ViewTochable.tsx";
+import { PressableView } from "../ViewTochable.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
-import { white } from "../styles/baseStyle.ts";
+import { white } from "../../styles/baseStyle.ts";
 // import { homeStyle } from "../styles/homeStyle.ts";
-import { borderWidth, heartSize, heartStyles } from "../styles/heartStyle.ts";
+import { borderWidth, heartSize, heartStyles } from "../../styles/heartStyle.ts";
 // import { homeStyle } from "../styles/homeStyle.ts";
 
 

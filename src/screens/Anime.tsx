@@ -1,44 +1,53 @@
 import { ScrollView, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from "react";
 import {homeStyle} from '../styles/homeStyle';
-import Header from '../components/Header';
+import Header from '../components/homePage/Header.tsx';
 import FastImage from 'react-native-fast-image';
-import { useRoute } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { AnimeTabScreenProps } from "../types/navigationTypes";
-import { ipApi } from "../consts.ts";
+import { cdnUrl, ipApi } from "../consts.ts";
 import { anime } from '../types/anime';
 import { animeStyle } from "../styles/animeScreen.ts";
-import HeartButton from "../components/HeartButton.tsx";
+import HeartButton from "../components/buttons/HeartButton.tsx";
 import { PressableView } from "../components/ViewTochable.tsx";
 import TextFont from "../components/TextFont.tsx";
-import AnimeProdList from "../components/AnimeProdList.tsx";
+import AnimeProdList from "../components/animePage/AnimeProdList.tsx";
 import { getEpTime, tupleToProducer, tupleToSeason } from "../functions/animeFunctions.ts";
 import Loading from "../components/Loading.tsx";
 import { getMonthName } from "../functions/stringsFuncions.ts";
-import AddAnimeListButton from "../components/AddAnimeListButton.tsx";
+import AddAnimeListButton from "../components/buttons/AddAnimeListButton.tsx";
 import { Picker } from "@react-native-picker/picker";
 import { types } from "cassandra-driver";
 import { Episode } from "../types/episodeType.ts";
 import { Season } from "../types/seasonType.ts";
-import AnimeEpisode from "../components/AnimeEpisode.tsx";
+import AnimeEpisode from "../components/animePage/AnimeEpisode.tsx";
+import Orientation from "react-native-orientation-locker";
 
 
-const Anime = () => {
+const Anime:FC = () => {
 	const route = useRoute<AnimeTabScreenProps<"animePage">["route"]>();
+	const navigation = useNavigation();
 	const aniId = route.params.animeId;
 	const [animee,setAnimee] = useState<anime>();
 	const [selectedSeason, setSelectedSeason] = useState<string>();
 	const [episodes, setEpisodes] = useState<Episode[]>([]);
-	const aniImgUrl = `${ipApi}/ani/img?Id=${aniId}`
+	const aniImgUrl = `${cdnUrl}/ani/img?Id=${aniId}`
+	const [isEpisodeLoading,setIsEpisodeLoading] = useState<boolean>()
 	useEffect(() => {
-		fetch(`${ipApi}/ani/${aniId}`).then(res => res.json()).then((res:anime) => setAnimee(res));
+		Orientation.lockToPortrait()
+		fetch(`${ipApi}/ani/${aniId}`).then(res => {
+			// console.log(res)
+			return res.json();
+		}).then((res:anime) => setAnimee(res));
 		// console.log(route.params.animeId);
 		if(animee){
+			// console.log(animee)
 			// console.log(typeof tupleToProducer(animee?.producers!));
-			animee.seasons = tupleToSeason(animee.seasons as types.Tuple[]);
-			console.log(animee.seasons[0].id)
+			animee.seasons = tupleToSeason(animee.seasons as types.Tuple[]).sort((a,b)=>a.index-b.index);
+			console.log(animee.seasons[0].id, animee.seasons[0].index,animee.seasons[0].name);
 			setSelectedSeason(animee.seasons[0].id);
 			const fetchEpisodes = async () => {
+				setIsEpisodeLoading(true);
 				const episodesTemp = [];
 				for (const seaso of animee.seasons || []) {
 					for (const episode of (seaso as Season).episodes || []) {
@@ -46,6 +55,7 @@ const Anime = () => {
 						const response = await fetch(`${ipApi}/g/eps/${animee.id}/${season.id}/${episode}`);
 						if (response.ok) {
 							const data = await response.json();
+							// console.log(season.name,data.name, data.seasonid)
 							episodesTemp.push(data);
 						} else {
 							console.error(`Erro ao buscar episódios da temporada ${season.id}`);
@@ -53,6 +63,7 @@ const Anime = () => {
 					}
 				}
 				setEpisodes(episodesTemp);
+				setIsEpisodeLoading(false);
 			};
 			fetchEpisodes();
 			// console.log(episodes);
@@ -64,7 +75,14 @@ const Anime = () => {
 		setDescBool(!descBool);
 		// console.log(descBool);
 	}
-	
+	const watchHandle = (ep:Episode) =>{
+		// console.log()
+		navigation.navigate("Watch" as never,{
+			episode:ep,
+			animename:animee?.name,
+			seasonname:tupleToSeason(animee!.seasons!).find(e=>e.id === selectedSeason)!.name,
+		} as never);
+	}
 	return (
 		<ScrollView style={[homeStyle.body]}>
 			<Header></Header>
@@ -114,20 +132,21 @@ const Anime = () => {
 								// console.log(e)
 								setSelectedSeason(e);
 							}}>
-								{tupleToSeason(animee.seasons! as types.Tuple[])!.map((v,i)=>(
+								{tupleToSeason(animee.seasons! as types.Tuple[])!.sort((a,b)=>a.index-b.index).map((v,i)=>(
 									<Picker.Item label={v.name} value={v.id} key={i}></Picker.Item>
 								))}
 							</Picker>
 						</View>
 					</View>
 					<View style={animeStyle.seasonSelectDiv}>
-						{episodes!
-							.filter(episode=>episode.seasonid === selectedSeason)
-							.sort((a,b)=>a.epindex-b.epindex)
-							.map((v,i)=> {
-								// console.log(v)
-								return <AnimeEpisode episode={v} key={i} />
-							})
+						{
+							!isEpisodeLoading? (episodes!
+								.filter(episode=>episode.seasonid === selectedSeason)
+								.sort((a,b)=>a.epindex-b.epindex)
+								.map((v,i)=> {
+									// console.log(v)
+									return <AnimeEpisode episode={v} key={i} watchHandle={watchHandle}/>
+								})):<></>
 						}
 					</View>
 				</View>

@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import LinearGradient from 'react-native-linear-gradient';
-import { body_purple } from "../styles/baseStyle";
-import { homeStyle } from "../styles/homeStyle";
+import { body_purple } from "../../styles/baseStyle.ts";
+import { homeStyle } from "../../styles/homeStyle.ts";
 import { Button, ScrollView, Text, View } from "react-native";
-import { animesStyle } from "../styles/animeComponentStyle";
-import { PressableView } from "./ViewTochable";
+import { animesStyle } from "../../styles/animeComponentStyle.ts";
+import { PressableView } from "../ViewTochable.tsx";
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { anime } from "../types/anime";
-import AnimePoster from "./AnimePoster";
-import TextFont from "./TextFont";
+import { anime } from "../../types/anime";
+import AnimePoster from "./anime/AnimePoster.tsx";
+import TextFont from "../TextFont.tsx";
+import { ipApi } from "../../consts.ts";
 // import { RootStackParamList } from "../types/screenType";
 
 
@@ -23,7 +24,10 @@ const Animes:React.FC<props>=({manga})=>{
     const [aniPosters,setAniPosters] = useState<React.JSX.Element[]>();
     const [mangaPosters,setMangaPosters] = useState<React.JSX.Element[]>();
     useEffect(()=>{
-        fetch("http://192.168.18.20:4433/api/ani/lan").then(res=>res.json())
+        fetch(`${ipApi}/ani/lan`).then(res=> {
+            console.log(res.status);
+            return res.json();
+        })
         .then((data:anime[])=>{
             const posterList = data.map((anime,index:number)=>(
                 <AnimePoster

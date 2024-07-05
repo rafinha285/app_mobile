@@ -16,3 +16,14 @@ export interface Episode{
     seasonid:string
     resolution:string[]
 }
+export interface IncomingEpisode{
+    animeid:string;
+    animename:string;
+    date_added:Date;
+    duration:number;
+    id:string;
+    name:string;
+    resolution:string[],
+    seasonid:string;
+    seasonname:string;
+}

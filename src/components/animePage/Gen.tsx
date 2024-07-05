@@ -1,8 +1,8 @@
 import { FC } from "react";
 import { View } from "react-native";
-import TextFont from "./TextFont";
-import { genStyles } from "../styles/genStyle"
-import { PressableView } from "./ViewTochable.tsx";
+import TextFont from "../TextFont.tsx";
+import { genStyles } from "../../styles/genStyle.ts"
+import { PressableView } from "../ViewTochable.tsx";
 
 interface Props {
 	name: string;

@@ -1,11 +1,11 @@
 import React from "react";
-import { anime } from "../types/anime";
+import { anime } from "../../../types/anime";
 import { View } from "react-native";
-import { animeComponentStyle } from "../styles/animeComponentStyle";
+import { animeComponentStyle } from "../../../styles/animeComponentStyle.ts";
 import FastImage from 'react-native-fast-image';
-import { PressableView } from "./ViewTochable";
+import { PressableView } from "../../ViewTochable.tsx";
 import { useNavigation } from "@react-navigation/native";
-import { ipApi } from "../consts.ts";
+import { cdnUrl, ipApi } from "../../../consts.ts";
 // import { RootStackParamList } from "../types/screenType";
 // import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -16,9 +16,10 @@ interface props{
 const AnimePoster:React.FC<props>=({animee})=>{
     // console.log(animee);
     // const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
-    const imageUrl = `${ipApi}/ani/img?Id=${animee.id}`
+    const imageUrl = `${cdnUrl}/ani/img?Id=${animee.id}`
     const navigation = useNavigation();
     const onPress = () => {
+        
         navigation.navigate('Anime' as never, { animeId:animee.id } as never);
     };
     return(

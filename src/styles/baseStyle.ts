@@ -56,7 +56,7 @@ export const HeaderStyles = StyleSheet.create({
         justifyContent:'space-between',
     },
     userDiv:{
-        padding:10,
+        padding:5,
     },
     userIcon:{
         color:white,

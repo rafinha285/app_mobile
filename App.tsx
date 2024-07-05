@@ -8,6 +8,10 @@ import MangaLancamentos from './src/screens/MangaLancamentos';
 import { setCustomText } from 'react-native-global-props';
 import { theme } from "./src/styles/baseStyle.ts";
 import GlobalProvider from "./src/GlobalProvider.tsx";
+import Login from "./src/screens/Login.tsx";
+import Register from "./src/screens/Register.tsx";
+import User from "./src/screens/User.tsx";
+import Watch from "./src/screens/Watch.tsx";
 // import { createStackNavigator } from "@react-navigation/stack";
 
 
@@ -22,28 +26,69 @@ function App() {
     useEffect(() => {
         setCustomText(theme);
     }, []);
-  return (<NavigationContainer>
-          <GlobalProvider>
-              <Stack.Navigator>
-                <Stack.Screen
-                  name="Home"
-                  component={Home}
-                  options={{headerShown: false}}></Stack.Screen>
-                <Stack.Screen
-                  name="Anime"
-                  component={Anime}
-                  options={{headerShown: false}}></Stack.Screen>
-                <Stack.Screen
-                  name="AnimeLancamentos"
-                  component={AnimeLancamentos}
-                  options={{headerShown: false}}></Stack.Screen>
-                <Stack.Screen
-                  name="MangaLancamentos"
-                  component={MangaLancamentos}
-                  options={{headerShown: false}}></Stack.Screen>
-              </Stack.Navigator>
-          </GlobalProvider>
-    </NavigationContainer>
+    return (
+        <NavigationContainer>
+            <GlobalProvider>
+                <Stack.Navigator>
+                    <Stack.Screen
+                        name="Home"
+                        component={Home}
+                        options={{
+                            headerShown: false,
+                            orientation:"portrait"
+                    }}/>
+                    <Stack.Screen
+                        name="Anime"
+                        component={Anime}
+                        options={{
+                            headerShown: false,
+                            orientation:"portrait"
+                    }}/>
+                    <Stack.Screen
+                        name="AnimeLancamentos"
+                        component={AnimeLancamentos}
+                        options={{
+                            headerShown: false,
+                            orientation:"portrait"
+                    }}/>
+                    <Stack.Screen
+                        name="MangaLancamentos"
+                        component={MangaLancamentos}
+                        options={{
+                            headerShown: false,
+                            orientation:"portrait"
+                    }}/>
+                    <Stack.Screen
+                        name="Login"
+                        component={Login}
+                        options={{
+                            headerShown: false,
+                            orientation:"portrait"
+                    }}/>
+                    <Stack.Screen
+                        name="Register"
+                        component={Register}
+                        options={{
+                            headerShown: false,
+                            orientation:"portrait"
+                    }} />
+                    <Stack.Screen
+                        name="User"
+                        component={User}
+                        options={{
+                            headerShown: false,
+                            orientation:"portrait"
+                    }}/>
+                    <Stack.Screen
+                        name="Watch"
+                        component={Watch}
+                        options={{
+                            orientation:"landscape",
+                            headerShown: false,
+                    }}/>
+                </Stack.Navigator>
+            </GlobalProvider>
+        </NavigationContainer>
   );
 }
 

@@ -4,8 +4,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 export interface GlobalContextType {
 	isLogged: boolean;
 	setToken: (token: string | null) => void;
+	getToken: () => Promise<string | undefined>;
 }
-const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
+export const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 
 export const GlobalProvider:React.FC<{children:ReactNode}> = ({children}) =>{
 	const [isLogged, setIsLogged] = useState<boolean>(false)
@@ -23,7 +24,15 @@ export const GlobalProvider:React.FC<{children:ReactNode}> = ({children}) =>{
 		
 		checkLoginStatus();
 	}, []);
-	
+	const getToken = async (): Promise<string | undefined> => {
+		try {
+			const token = await AsyncStorage.getItem("token");
+			return token !== null ? token : undefined;
+		} catch (e) {
+			console.error("Erro ao acessar AsyncStorage:", e);
+			return undefined;
+		}
+	};
 	const setToken = async (token: string | null) => {
 		try {
 			if (token) {
@@ -39,7 +48,7 @@ export const GlobalProvider:React.FC<{children:ReactNode}> = ({children}) =>{
 	};
 	
 	return(
-		<GlobalContext.Provider value={{isLogged,setToken}}>
+		<GlobalContext.Provider value={{isLogged,setToken,getToken}}>
 			{children}
 		</GlobalContext.Provider>
 	)

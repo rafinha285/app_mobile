@@ -1,24 +1,22 @@
 import { FC } from "react";
 import { View } from "react-native";
-import TextFont from "./TextFont.tsx";
-import { Episode } from "../types/episodeType.ts";
-import { animeEpisodeComponentStyle } from "../styles/animeScreen.ts";
-import AnimeEpisodeButton from "./AnimeEpisodeButton.tsx";
-import { trim } from "../functions/stringsFuncions.ts";
-import { gray } from "../styles/baseStyle.ts";
-import { useGlobalContext } from "../GlobalProvider.tsx";
+import TextFont from "../TextFont.tsx";
+import { Episode } from "../../types/episodeType.ts";
+import { animeEpisodeComponentStyle } from "../../styles/animeScreen.ts";
+import AnimeEpisodeButton from "./episode/AnimeEpisodeButton.tsx";
+import { trim } from "../../functions/stringsFuncions.ts";
+import { gray } from "../../styles/baseStyle.ts";
+import { useGlobalContext } from "../../GlobalProvider.tsx";
 
 interface AnimeEpisodeProps {
 	episode:Episode
+	watchHandle:(ep:Episode)=>void;
 }
-const AnimeEpisode:FC<AnimeEpisodeProps> = ({episode}) => {
+const AnimeEpisode:FC<AnimeEpisodeProps> = ({episode, watchHandle}) => {
 	const { isLogged } = useGlobalContext();
 	// console.log(episode);
 	const seenHandle = () =>{
 		console.log("seen")
-	}
-	const watchHandle = () =>{
-		console.log("watch")
 	}
 	const downloadHandle = () =>{
 		console.log("download")
@@ -30,7 +28,7 @@ const AnimeEpisode:FC<AnimeEpisodeProps> = ({episode}) => {
 			</View>
 			<View style={[animeEpisodeComponentStyle.textDiv,{flexDirection:"row",justifyContent:"space-evenly"}]}>
 				{isLogged ? <AnimeEpisodeButton typeButton={"seen"} onPress={seenHandle}/> : <></>}
-				<AnimeEpisodeButton typeButton={"watch"} onPress={watchHandle}/>
+				<AnimeEpisodeButton typeButton={"watch"} onPress={()=>watchHandle(episode)}/>
 				<AnimeEpisodeButton typeButton={"download"} onPress={downloadHandle}/>
 			</View>
 		</View>

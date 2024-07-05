@@ -1,6 +1,6 @@
 import React from "react";
 import { View } from "react-native";
-import { loadingStyles } from "../styles/loading.ts";
+import { loadingStyles } from "../styles/loadingStyle.ts";
 import TextFont from "./TextFont.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";

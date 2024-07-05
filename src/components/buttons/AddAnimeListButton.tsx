@@ -1,11 +1,11 @@
 import { FC } from "react";
 import { View } from "react-native";
-import { PressableView } from "./ViewTochable.tsx";
-import TextFont from "./TextFont.tsx";
+import { PressableView } from "../ViewTochable.tsx";
+import TextFont from "../TextFont.tsx";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { white } from "../styles/baseStyle.ts";
+import { white } from "../../styles/baseStyle.ts";
 import { faSquarePlus } from "@fortawesome/free-regular-svg-icons";
-import { addAnimeListButtonStyle } from "../styles/animeScreen.ts";
+import { addAnimeListButtonStyle } from "../../styles/animeScreen.ts";
 
 const addAnimeListButton:FC = () => {
 	const handlePress = ()=>{

@@ -73,3 +73,38 @@ Date.prototype.daysOfWeek = (language:languages = languages.Portuguese) =>{
 			return ['Domingo', 'Segunda-feira', 'Terça-feira', 'Quarta-feira', 'Quinta-feira', 'Sexta-feira', 'Sábado']; // Padrão para idioma português
 	}
 }
+
+
+export const languageMap = {
+	eng: 'en',
+	por: 'pt',
+	spa: 'es',
+	ara: 'ar',
+	fre: 'fr',
+	ger: 'de',
+	ita: 'it',
+	jpn: 'ja',
+	pol: 'pl',
+	dut: 'nl',
+	nob: 'nb',
+	fin: 'fi',
+	tur: 'tr',
+	swe: 'sv',
+	gre: 'el',
+	heb: 'he',
+	rum: 'ro',
+	ind: 'id',
+	tha: 'th',
+	kor: 'ko',
+	dan: 'da',
+	chi: 'zh',
+	vie: 'vi',
+	ukr: 'uk',
+	hun: 'hu',
+	cze: 'cs',
+	hrv: 'hr',
+	may: 'ms',
+	fil: 'fil',
+	hin: 'hi',
+	// Adicione os outros códigos ISO 639-1 conforme necessário
+};

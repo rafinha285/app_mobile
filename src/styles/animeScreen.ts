@@ -109,7 +109,7 @@ export const addAnimeListButtonStyle = StyleSheet.create({
 		borderRadius:8,
 		paddingHorizontal:10,
 		paddingVertical:5,
-		width:"46%",
+		// width:"50%",
 		flexDirection:"row",
 		alignItems:'center',
 		marginHorizontal:"auto"
@@ -137,10 +137,10 @@ export const animeEpisodeComponentStyle = StyleSheet.create({
 	},
 	button:{
 		backgroundColor:purple,
-		// width:"20%",
 		flexDirection:"row",
 		padding:10,
-		paddingHorizontal:20,
+		paddingHorizontal:15,
 		borderRadius:6,
+		alignItems:'center',
 	}
 })
