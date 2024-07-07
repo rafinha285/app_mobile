@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { StyleSheet, TouchableHighlight, View } from "react-native";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { WatchTabScreenProps } from "../types/navigationTypes";
@@ -14,6 +14,9 @@ import { Season } from "../types/seasonType.ts";
 import { tupleToSeason } from "../functions/animeFunctions.ts";
 import PlayerControls from "../components/player/controls/PlayerControls.tsx";
 import absoluteFill = StyleSheet.absoluteFill;
+import parser from "../functions/VTTfunction.ts";
+import { VTTCaptionType } from "../types/captionType.ts";
+import { handleProgress } from "../hooks/onTimeChange.ts";
 // import Header from "../components/Header.tsx";
 
 const Watch:FC = () =>{
@@ -24,62 +27,55 @@ const Watch:FC = () =>{
 	const animename:string = route.params.animename;
 	const seasonname:string = route.params.seasonname;
 	const ep:Episode = route.params.episode;
-	// eslint-disable-next-line @typescript-eslint/no-shadow
+	
 	const [anime,setAnime] = useState<anime>();
 	const [season,setSeason] = useState<Season>();
+	const [episode,setEpisode] = useState<Episode>();
+	
 	const [loading,setLoading] = useState<boolean>(true);
+	
 	const [selectedQuality,setSelectedQuality] = useState<'1080'|'720'|'480'>('480')
-	// const [seasonEps,setSeasonEps] = useState<Episode[]>()
+	
+	const [currentTime, setCurrentTime] = useState<number>(0);
+	
+	const [selectedCaption,setSelectedCaption] = useState<string>('por');
+	const [subtitles, setSubtitles] = useState<VTTCaptionType[]>([]);
+	const [currentSubtitles, setCurrentSubtitles] = useState<string[]>(['']);
+	const [isOnIntro, setIsOnIntro] = useState<boolean>(false);
+	const [isOnOutro, setIsOnOutro] = useState<boolean>(false);
+	
+	const getCaptions = async(selectedCaptionUrl:string) =>{
+		const response = await fetch(`${cdnUrl}/ep/${ep?.animeid}/${ep?.seasonid}/${ep?.id}/${ep?.id}-${selectedCaptionUrl}.vtt`);
+		console.log(response.status,`${cdnUrl}/ep/${ep?.animeid}/${ep?.seasonid}/${ep?.id}/${ep?.id}-${selectedCaptionUrl}.vtt`)
+		const vttContent = await response.text();
+		// @ts-ignore
+		const parsedSubtitles = parser.fromVtt(vttContent, 's');
+		setSubtitles(parsedSubtitles);
+	}
+	const fetchData = async()=>{
+		await fetch(`${ipApi}/g/eps/${ep.animeid}/${ep.seasonid}/${ep.id}`).then(res=>res.json()).then((data:Episode) => {
+			setEpisode(data);
+			console.log(data);
+		});
+	};
 	useEffect(() => {
 		if (ep.subtitlestracks) {
-			const updatedCaptionsTracks = ep.subtitlestracks.map((track, index) => {
-				// @ts-ignore
-				const language = languageMap[track];
-				if(language){
-					let sub = {
-						title: `Track ${index + 1}`,
-						language: '' || language,
-						type: 'text/vtt' as TextTrackType,
-						uri: `${ipApi}/ep/${ep.animeid}/${ep.seasonid}/${ep.id}/${ep.id}-${track}.vtt`,
-					};
-					// console.log(sub);
-					return sub;
-				}else{
-					return null;
-				}
-			}).filter(Boolean);
 			console.log(`${cdnUrl}/stream/${ep.animeid}/${ep.seasonid}/${ep.id}/1080`)
 			fetch(`${ipApi}/ani/${ep.animeid}`).then((res)=>res.json()).then(data=>setAnime(data))
 			if(anime){
 				setSeason(tupleToSeason(anime?.seasons!).find((v:Season)=>v.id === ep.seasonid))
 			}
-			if(season){
-				let tempArr:Episode[] = []
-				season.episodes.forEach((v)=>{
-					fetch(`${ipApi}/`)
-				})
-			}
 			// @ts-ignore
-			// console.log(updatedCaptionsTracks());
-			// setCaptionsTracks(updatedCaptionsTracks);
 		}
-		Orientation.lockToLandscape();
-		// console.log(videoRef.current)
-		// console.log(videoRef.current,`${cdnUrl}/ep/${anime?.id}/${season?.id}/${ep.id}/${ep.id}-por.vtt`)
-		// Remove o ouvinte quando o componente é desmontado
+		fetchData();
+		getCaptions(selectedCaption);
+		// Orientation.lockToLandscape();
 		return () => {
 			// Orientation.lockToPortrait();
 			// Dimensions.removeEventListener('change', handleOrientationChange);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-		//ep.subtitlestracks,captionsTracks.length != 0,anime,season,seasonEps
+
 	}, []);
-	let porTextTrack:TextTracks = [{
-		title:'Português',
-		type:TextTrackType.VTT,
-		language:'pt',
-		uri:`${ipApi}/ep/${anime?.id}/${season?.id}/${ep.id}/${ep.id}-por.vtt`,
-	}]
 	const handleLoadStart = () => {
 		setLoading(true);
 	};
@@ -89,6 +85,28 @@ const Watch:FC = () =>{
 	const handleBuffer = (isBuffering: boolean) => {
 		setLoading(isBuffering);
 	};
+	
+	
+	// useEffect(()=>{
+	// 	let animationFrameId: number;
+	// 	const updateSubtitles = async () => {
+	// 		if (videoRef.current) {
+	// 			try {
+	// 				const time = await videoRef.current.getCurrentPosition();
+	// 				// console.log(time)
+	// 				const activeSubtitles = subtitles.filter(subtitle =>
+	// 					time >= subtitle.startTime && time <= subtitle.endTime
+	// 				);
+	// 				setCurrentSubtitles(activeSubtitles.map(subtitle => removeHtmlTags(subtitle.text)));
+	// 			} catch (error) {
+	// 				console.error('Error getting current position:', error);
+	// 			}
+	// 		}
+	// 		animationFrameId = requestAnimationFrame(updateSubtitles);
+	// 	};// Atualiza a cada 10 milisegundos
+	// 	animationFrameId = requestAnimationFrame(updateSubtitles);
+	// 	return () => cancelAnimationFrame(animationFrameId);
+	// })
 	// @ts-ignore
 	return(
 		<View style={[homeStyle.body,{flexGrow:1}]}>
@@ -103,16 +121,25 @@ const Watch:FC = () =>{
 							onLoadStart={handleLoadStart}
 							onLoad={handleLoad}
 							onBuffer={({ isBuffering }) => handleBuffer(isBuffering)}
+							poster={`${cdnUrl}/ep/${ep.animeid}/${ep.seasonid}/${ep.id}/${ep.id}.jpg`}
+							onProgress={(e)=>handleProgress(e, setCurrentSubtitles, setCurrentTime, subtitles,setIsOnIntro,setIsOnOutro,ep)}
 							// paused
 						/>
 						<PlayerControls
-							epS={ep}
+							ep={episode}
 							animename={animename}
 							seasonname={seasonname}
 							videoRef={videoRef}
 							isloading={loading}
 							selectedQuality={selectedQuality}
 							setSelectedQuality={setSelectedQuality}
+							currentTime={currentTime}
+							currentSubtitles={currentSubtitles}
+							selectedCaption={selectedCaption}
+							setSelectedCaption={setSelectedCaption}
+							getCaptions={getCaptions}
+							isOnIntro={isOnIntro}
+							isOnOutro={isOnOutro}
 						/>
 					</>
 			</View>

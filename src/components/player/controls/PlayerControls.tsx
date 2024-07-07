@@ -15,7 +15,6 @@ import { useEffect, useState } from "react";
 import { configStyle } from "../../../styles/playerStyle.ts";
 import TextFont from "../../TextFont.tsx";
 import { VideoRef } from "react-native-video";
-// import Slider from "react-native-slider";
 import Slider from '@react-native-community/slider';
 import {
 	gray,
@@ -27,68 +26,106 @@ import Spinner from "../../Spinner.tsx";
 import { getEpTime } from "../../../functions/animeFunctions.ts";
 import { ipApi } from "../../../consts.ts";
 import Orientation from "react-native-orientation-locker";
-import config from "../../Config.tsx";
 import ConfigPlayer from "./ConfigPlayer.tsx";
-// import { white } from "../../../styles/baseStyle.ts";
 
 interface Props{
-	epS:Episode
+	ep:Episode|undefined
 	animename:string
 	seasonname:string
 	videoRef: React.RefObject<VideoRef>;
 	isloading:boolean
 	selectedQuality:'1080'|'720'|'480';
 	setSelectedQuality:React.Dispatch<React.SetStateAction<'1080'|'720'|'480'>>;
+	currentTime:number;
+	setSelectedCaption:React.Dispatch<React.SetStateAction<string>>;
+	selectedCaption:string;
+	currentSubtitles:string[];
+	getCaptions:(selectedCaptionUrl:string)=>Promise<void>;
+	isOnIntro:boolean;
+	isOnOutro:boolean;
 }
 const PlayerControls:React.FunctionComponent<Props> = (
 	{
-		epS,
+		ep,
 		animename,
 		seasonname,
 		videoRef,
 		isloading,
 		selectedQuality,
-		setSelectedQuality
+		setSelectedQuality,
+		currentTime,
+		setSelectedCaption,
+		selectedCaption,
+		currentSubtitles,
+		getCaptions,
+		isOnIntro,
+		isOnOutro
 	})=>{
 	const navigation = useNavigation();
 	const [pressed, setPressed] = useState(true);
-	const [currentTime, setCurrentTime] = useState<number>(0);
 	const [isPaused,setIsPaused] = useState(false);
 	const [eps,setEps] = useState<Map<number,Episode>>(new Map());
-	const [ep,setEp] = useState<Episode>();
-	const [selectedCaption,setSelectedCaption] = useState<string>("");
+	// const [ep,setEp] = useState<Episode>();
+	
 	const [configPressed, setConfigPressed] = useState(true);
+	
+	// const [currentSubtitles, setCurrentSubtitles] = useState<string[]>(['']);
 	useEffect(() => {
 		const fetchData = async() =>{
-			await fetch(`${ipApi}/g/s/eps/${epS.animeid}/${epS.seasonid}`).then(res=>res.json()).then((data:Episode[])=> {
+			await fetch(`${ipApi}/g/s/eps/${ep?.animeid}/${ep?.seasonid}`).then(res=>res.json()).then((data:Episode[])=> {
 				// console.log(data)
-				var map = new Map<number,Episode>();
-				data.sort((a,b)=>a.epindex-b.epindex);
-				for(let i = 0; i < data.length; i++){
-					map.set(i+1,data[i]);
-					// console.log(i+1)
-				}
-				// console.log(map)
-				setEps(map);
+				// var map = new Map<number,Episode>();
+				// data.sort((a,b)=>a.epindex - b.epindex);
+				// for(let i = 0; i < data.length; i++){
+				// 	map.set(i+1,data[i]);
+				// 	// console.log(i+1)
+				// }
+				// // console.log(map)
+				// setEps(map);
 			});
-			await fetch(`${ipApi}/g/eps/${epS.animeid}/${epS.seasonid}/${epS.id}`).then(res=>res.json()).then((data:Episode) => {
-				setEp(data);
-				console.log(data)
-			})
 		};
 		fetchData();
 		Orientation.lockToLandscape();
 		if(ep){
 		}
+		
 		// console.log(videoRef.current);
-		const interval = setInterval(async () => {
-			if (videoRef.current) {
-				const time = await videoRef.current.getCurrentPosition();
-				setCurrentTime(time);
-			}
-		}, 10); // Atualiza a cada 10 milisegundos
-		return () => clearInterval(interval);
+
 	}, [videoRef]);
+	// useEffect(() => {
+	// 	const interval = setInterval(async () => {
+	// 		if (videoRef.current) {
+	// 			try {
+	// 				const time = await videoRef.current.getCurrentPosition();
+	// 				setCurrentTime(time);
+	// 			} catch (error) {
+	// 				console.error('Error getting current time:', error);
+	// 			}
+	// 		}
+	// 	}, 500);
+	//
+	// 	return () => clearInterval(interval);
+	// }, [videoRef]);
+	
+	// useEffect(()=>{
+	// 	let animationFrameId: number;
+	// 	const updateSubtitles = async () => {
+	// 		if (videoRef.current) {
+	// 			try {
+	// 				const time = await videoRef.current.getCurrentPosition();
+	// 				const activeSubtitles = subtitles.filter(subtitle =>
+	// 					time >= subtitle.startTime && time <= subtitle.endTime
+	// 				);
+	// 				setCurrentSubtitles(activeSubtitles.map(subtitle => removeHtmlTags(subtitle.text)));
+	// 			} catch (error) {
+	// 				console.error('Error getting current position:', error);
+	// 			}
+	// 		}
+	// 		animationFrameId = requestAnimationFrame(updateSubtitles);
+	// 	};// Atualiza a cada 10 milisegundos
+	// 	animationFrameId = requestAnimationFrame(updateSubtitles);
+	// 	return () => cancelAnimationFrame(animationFrameId);
+	// })
 	const handlePause = () =>{
 		console.log(!isPaused?"pausado":"nao pausado")
 		if(pressed){
@@ -126,7 +163,7 @@ const PlayerControls:React.FunctionComponent<Props> = (
 						{/*	<TextFont style={{fontSize:18}}>{animename}</TextFont>*/}
 						{/*</PressableView>*/}
 						<TextFont style={{fontSize:16}}>{seasonname}</TextFont>
-						<TextFont style={{fontSize:18}}>{epS.name}</TextFont>
+						<TextFont style={{fontSize:18}}>{ep?.name}</TextFont>
 					</View>
 					<PressableView onPress={()=>{setConfigPressed(!configPressed)}}>
 						<FontAwesomeIcon icon={faGear} size={20} color={white} />
@@ -135,9 +172,9 @@ const PlayerControls:React.FunctionComponent<Props> = (
 				<View style={configStyle.centerContainer}>
 					{!isloading ? (
 						<>
-							<PressableView style={configStyle.playButton} onPress={handlePreviousEp}>
-								<FontAwesomeIcon icon={faArrowLeft} size={25} color="white" />
-							</PressableView>
+							{/*<PressableView style={configStyle.playButton} onPress={handlePreviousEp}>*/}
+							{/*	<FontAwesomeIcon icon={faArrowLeft} size={25} color="white" />*/}
+							{/*</PressableView>*/}
 							<PressableView style={configStyle.playButton} onPress={handleBack}>
 								<FontAwesomeIcon icon={faAnglesLeft} size={25} color="white" />
 							</PressableView>
@@ -157,9 +194,9 @@ const PlayerControls:React.FunctionComponent<Props> = (
 							<PressableView style={configStyle.playButton} onPress={handleFoward}>
 								<FontAwesomeIcon icon={faAnglesRight} size={25} color="white" />
 							</PressableView>
-							<PressableView style={configStyle.playButton} onPress={handleNextEp}>
-								<FontAwesomeIcon icon={faArrowRight} size={25} color="white" />
-							</PressableView>
+							{/*<PressableView style={configStyle.playButton} onPress={handleNextEp}>*/}
+							{/*	<FontAwesomeIcon icon={faArrowRight} size={25} color="white" />*/}
+							{/*</PressableView>*/}
 						</>
 					):<></>}
 				</View>
@@ -172,24 +209,43 @@ const PlayerControls:React.FunctionComponent<Props> = (
 						}}
 						value={currentTime}
 						minimumValue={0}
-						maximumValue={epS.duration!}
+						maximumValue={ep?.duration!}
 						minimumTrackTintColor={orange}
 						maximumTrackTintColor={gray}
 						thumbTintColor={pink}
 						onValueChange={(n)=>pressed ? videoRef.current?.seek(n) : console.log("cu")}
 					/>
-					<TextFont>{getEpTime(currentTime)} / {getEpTime(epS.duration!)}</TextFont>
+					<TextFont>{getEpTime(currentTime)} / {getEpTime(ep?.duration!)}</TextFont>
+					<PressableView style={{
+						margin:10,
+						borderWidth:1,
+						borderColor:white,
+						borderRadius:10,
+						padding:5,
+						display: isOnIntro ? 'flex' : 'none',
+					}} onPress={()=>{videoRef.current?.seek(ep?.openingend!)}}>
+						<TextFont>Passar intro</TextFont>
+					</PressableView>
+					<PressableView style={{
+						margin:10,
+						borderWidth:1,
+						borderColor:white,
+						borderRadius:10,
+						padding:5,
+						display: isOnOutro ? 'flex' : 'none',
+					}} onPress={()=>{}}>
+						<TextFont>Proximo Episodio</TextFont>
+					</PressableView>
 				</View>
 			</PressableView>
-			<View style={{
-				position:"absolute",
-				borderWidth:1,
-				borderColor:white,
-				width:'100%',
-				height:pressed ? '20%' : '30%',
+			<PressableView onPress={()=>setPressed(!pressed)} style={[{
+				height:!pressed ? '70%' : '20%',
 				bottom:pressed ? '20%' : 0
-			}}>
-			</View>
+			},configStyle.subtitleContainer]}>
+				{currentSubtitles.map((subtitle, index) => (
+					<TextFont style={configStyle.subtitle} key={index}>{subtitle}</TextFont>
+				))}
+			</PressableView>
 			{ep?.resolution ?
 				<ConfigPlayer
 					pressed={configPressed}
@@ -200,6 +256,7 @@ const PlayerControls:React.FunctionComponent<Props> = (
 					captions={ep?.subtitlestracks!}
 					selectedCaptions={selectedCaption}
 					setSelectedCaption={setSelectedCaption}
+					getCaptions={getCaptions}
 				/>
 			:<></>}
 		</>

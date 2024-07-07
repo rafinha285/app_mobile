@@ -3,7 +3,7 @@ var parser = (function () {
 		fromVtt: undefined,
 		toVtt: undefined,
 	};
-
+	
 	// @ts-ignore
 	pItems.fromVtt = function (data: any, timeFormat: any) {
 		data = data.replace(/\r/g, '');
@@ -12,6 +12,7 @@ var parser = (function () {
 		data.shift();
 		var items = [];
 		for (var i = 0; i < data.length; i += 6) {
+			// console.log(data[i]);
 			var text = data[i + 5];
 			if (text.trim().length === 0) {continue;}
 			items.push({

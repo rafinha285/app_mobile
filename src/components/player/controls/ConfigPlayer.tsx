@@ -17,6 +17,7 @@ interface Props {
 	setSelectedCaption:(value:string) => void;
 	selectedCaptions:string;
 	captions:string[];
+	getCaptions:(selectedCaptionUrl:string)=>Promise<void>;
 }
 const ConfigPlayer:React.FC<Props> = ({
 		pressed,
@@ -27,12 +28,13 @@ const ConfigPlayer:React.FC<Props> = ({
 		captions,
 		selectedCaptions,
 	    setSelectedCaption,
+		getCaptions,
 	}) =>{
 	// const [pressed,setPressed] = useState<boolean>(false);
 	// console.log(qualitys+' gay')
 	return <View style={[configPlayerStyle.container,{display:pressed?"none":'flex'}]}>
 		<ScrollView style={configPlayerStyle.innerContainer} contentContainerStyle={configPlayerStyle.innerContainerContainer}>
-			<PressableView onPress={()=>setPressed(!pressed)}>
+			<PressableView style={{right:0,top:0}} onPress={()=>setPressed(!pressed)}>
 				<FontAwesomeIcon icon={faX} size={20} color="white"/>
 			</PressableView>
 			<TextFont>Qualidade: </TextFont>
@@ -53,8 +55,10 @@ const ConfigPlayer:React.FC<Props> = ({
 						borderColor:white,
 						borderWidth:1
 					}} onValueChange={(v:any)=>{
-						// console.log(v);
+						console.log(v);
+						getCaptions(v)
 						setSelectedCaption(v);
+						
 					}} selectedValue={selectedCaptions}>
 						{captions.map((v, i)=> (
 							<Picker.Item label={v} value={v} key={i}/>

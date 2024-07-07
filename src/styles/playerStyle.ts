@@ -1,6 +1,6 @@
 import { CSSProperties } from "react";
 import { StyleSheet } from "react-native";
-import { dark_purple2, gray_dark, purple, white } from "./baseStyle.ts";
+import { dark_purple2, gray, gray_dark, purple, white } from "./baseStyle.ts";
 
 export const playerStyle = StyleSheet.create({
 	fullScreen:{
@@ -78,7 +78,7 @@ export const configStyle = StyleSheet.create({
 		flexDirection:'row',
 		// borderColor:white,
 		// borderWidth: 1,
-		paddingHorizontal:50,
+		paddingHorizontal:100,
 		bottom:0,
 	},
 	title: {
@@ -86,9 +86,21 @@ export const configStyle = StyleSheet.create({
 		fontWeight: "bold",
 		marginBottom: 10,
 	},
+	subtitleContainer:{
+		position:'absolute',
+		// borderWidth:1,
+		// borderColor:white,
+		width:'100%',
+		alignItems:'center',
+		// justifyContent:'center',
+		flexDirection:'column-reverse'
+	},
 	subtitle: {
 		fontSize: 16,
 		marginBottom: 10,
+		padding:5,
+		backgroundColor:gray_dark,
+		borderRadius:10,
 	},
 	subtitleButton: {
 		padding: 10,
@@ -99,6 +111,7 @@ export const configStyle = StyleSheet.create({
 	subtitleText: {
 		fontSize: 14,
 	},
+	
 })
 export const configPlayerStyle = StyleSheet.create({
 	container:{
