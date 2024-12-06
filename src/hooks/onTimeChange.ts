@@ -12,12 +12,13 @@ export const handleProgress = (
 	subtitles:VTTCaptionType[],
 	setIsOnIntro:React.Dispatch<React.SetStateAction<boolean>>,
 	setIsOnOutro:React.Dispatch<React.SetStateAction<boolean>>,
-	ep:Episode
+	ep:Episode,
+	eps:Map<number, Episode>
 ) => {
 	const time = progress.currentTime;
 	// console.log();
 	setCurrentTime(time);
-	setIsOnIntro(time >= ep.openingstart && time < ep.openingend);
+	setIsOnIntro(time >= ep.openingstart && time < ep.openingend && eps.has(ep.epindex+1));
 	setIsOnOutro(time >= ep.ending);
 	const activeSubtitles = subtitles.filter(subtitle =>
 		time >= subtitle.startTime && time <= subtitle.endTime

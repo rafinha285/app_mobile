@@ -9,7 +9,7 @@ import { Episode } from "../types/episodeType.ts";
 import { languageMap } from "../functions/stringsFuncions.ts";
 import { cdnUrl, ipApi } from "../consts.ts";
 import type { OnProgressData } from "react-native-video/src/specs/VideoNativeComponent.ts";
-import { anime } from "../types/anime";
+import { Anime } from "../types/anime";
 import { Season } from "../types/seasonType.ts";
 import { tupleToSeason } from "../functions/animeFunctions.ts";
 import PlayerControls from "../components/player/controls/PlayerControls.tsx";
@@ -28,9 +28,10 @@ const Watch:FC = () =>{
 	const seasonname:string = route.params.seasonname;
 	const ep:Episode = route.params.episode;
 	
-	const [anime,setAnime] = useState<anime>();
+	const [anime,setAnime] = useState<Anime>();
 	const [season,setSeason] = useState<Season>();
 	const [episode,setEpisode] = useState<Episode>();
+	const [eps,setEps] = useState<Map<number,Episode>>(new Map());
 	
 	const [loading,setLoading] = useState<boolean>(true);
 	
@@ -56,6 +57,17 @@ const Watch:FC = () =>{
 		await fetch(`${ipApi}/g/eps/${ep.animeid}/${ep.seasonid}/${ep.id}`).then(res=>res.json()).then((data:Episode) => {
 			setEpisode(data);
 			console.log(data);
+		});
+		await fetch(`${ipApi}/g/s/eps/${ep?.animeid}/${ep?.seasonid}`).then(res=>res.json()).then((data:Episode[])=> {
+			console.log(data)
+			var map = new Map<number,Episode>();
+			data.sort((a,b)=>a.epindex - b.epindex);
+			for(let i = 0; i < data.length; i++){
+				map.set(i+1,data[i]);
+				// console.log(i+1)
+			}
+			// console.log(map)
+			setEps(map);
 		});
 	};
 	useEffect(() => {
@@ -122,7 +134,7 @@ const Watch:FC = () =>{
 							onLoad={handleLoad}
 							onBuffer={({ isBuffering }) => handleBuffer(isBuffering)}
 							poster={`${cdnUrl}/ep/${ep.animeid}/${ep.seasonid}/${ep.id}/${ep.id}.jpg`}
-							onProgress={(e)=>handleProgress(e, setCurrentSubtitles, setCurrentTime, subtitles,setIsOnIntro,setIsOnOutro,ep)}
+							onProgress={(e)=>handleProgress(e, setCurrentSubtitles, setCurrentTime, subtitles,setIsOnIntro,setIsOnOutro,ep,eps)}
 							// paused
 						/>
 						<PlayerControls

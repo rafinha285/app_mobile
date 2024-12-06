@@ -64,27 +64,17 @@ const PlayerControls:React.FunctionComponent<Props> = (
 	const navigation = useNavigation();
 	const [pressed, setPressed] = useState(true);
 	const [isPaused,setIsPaused] = useState(false);
-	const [eps,setEps] = useState<Map<number,Episode>>(new Map());
+	
 	// const [ep,setEp] = useState<Episode>();
 	
 	const [configPressed, setConfigPressed] = useState(true);
 	
 	// const [currentSubtitles, setCurrentSubtitles] = useState<string[]>(['']);
 	useEffect(() => {
-		const fetchData = async() =>{
-			await fetch(`${ipApi}/g/s/eps/${ep?.animeid}/${ep?.seasonid}`).then(res=>res.json()).then((data:Episode[])=> {
-				// console.log(data)
-				// var map = new Map<number,Episode>();
-				// data.sort((a,b)=>a.epindex - b.epindex);
-				// for(let i = 0; i < data.length; i++){
-				// 	map.set(i+1,data[i]);
-				// 	// console.log(i+1)
-				// }
-				// // console.log(map)
-				// setEps(map);
-			});
-		};
-		fetchData();
+		// const fetchData = async() =>{
+			
+		// };
+		// fetchData();
 		Orientation.lockToLandscape();
 		if(ep){
 		}

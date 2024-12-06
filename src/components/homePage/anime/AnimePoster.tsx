@@ -1,5 +1,5 @@
 import React from "react";
-import { anime } from "../../../types/anime";
+import { Anime } from "../../../types/anime";
 import { View } from "react-native";
 import { animeComponentStyle } from "../../../styles/animeComponentStyle.ts";
 import FastImage from 'react-native-fast-image';
@@ -10,7 +10,7 @@ import { cdnUrl, ipApi } from "../../../consts.ts";
 // import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface props{
-    animee:anime
+    animee:Anime
 }
 // type AnimeScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Anime'>;
 const AnimePoster:React.FC<props>=({animee})=>{

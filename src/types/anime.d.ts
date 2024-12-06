@@ -3,7 +3,7 @@ import {Season} from './seasonType';
 import {Audio, quality} from './type.ts';
 import {types} from 'cassandra-driver';
 
-export interface anime {
+export interface Anime {
     id:string;
     name:string;
     name2: string;

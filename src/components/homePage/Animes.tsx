@@ -6,10 +6,10 @@ import { Button, ScrollView, Text, View } from "react-native";
 import { animesStyle } from "../../styles/animeComponentStyle.ts";
 import { PressableView } from "../ViewTochable.tsx";
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { anime } from "../../types/anime";
+import { Anime } from "../../types/anime";
 import AnimePoster from "./anime/AnimePoster.tsx";
 import TextFont from "../TextFont.tsx";
-import { ipApi } from "../../consts.ts";
+import { ipApi, ipBase } from "../../consts.ts";
 // import { RootStackParamList } from "../types/screenType";
 
 
@@ -24,11 +24,11 @@ const Animes:React.FC<props>=({manga})=>{
     const [aniPosters,setAniPosters] = useState<React.JSX.Element[]>();
     const [mangaPosters,setMangaPosters] = useState<React.JSX.Element[]>();
     useEffect(()=>{
-        fetch(`${ipApi}/ani/lan`).then(res=> {
+        fetch(`${ipBase}/ani/g/lan`).then(res=> {
             console.log(res.status);
             return res.json();
         })
-        .then((data:anime[])=>{
+        .then((data:Anime[])=>{
             const posterList = data.map((anime,index:number)=>(
                 <AnimePoster
                     animee={anime}

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Home from './src/screens/Home';
-import Anime from './src/screens/Anime';
+import AnimeComponent from './src/screens/AnimeComponent.tsx';
 import {NavigationContainer} from "@react-navigation/native"
 import {createNativeStackNavigator} from "@react-navigation/native-stack"
 import AnimeLancamentos from './src/screens/AnimeLancamentos';
@@ -39,7 +39,7 @@ function App() {
                     }}/>
                     <Stack.Screen
                         name="Anime"
-                        component={Anime}
+                        component={AnimeComponent}
                         options={{
                             headerShown: false,
                             orientation:"portrait"
